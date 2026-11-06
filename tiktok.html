@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Conectar TikTok · Cece</title>
+<link rel="icon" href="logo120.png">
+<link rel="stylesheet" href="estilo.css">
+<style>
+  .codigo { background: #000; border: 1px solid #3a3237; border-radius: 12px; padding: 14px; font: 15px/1.4 Consolas, monospace;
+            word-break: break-all; user-select: all; }
+  button { background: var(--rojo); color: #fff; border: 0; border-radius: 999px; padding: 12px 22px; font-weight: 700;
+           font-size: 1rem; cursor: pointer; margin-top: 14px; }
+</style>
+</head>
+<body>
+<main>
+  <p><a href="index.html">← Cece | Datos curiosos</a></p>
+  <h1>Conectar TikTok</h1>
+  <div class="caja" id="caja">
+    <p>Esta página solo la usa el responsable de Cece para conectar Fabrica CC con su cuenta de TikTok.</p>
+  </div>
+</main>
+<script>
+  // TikTok vuelve aquí con ?code=... tras dar permiso. El código se copia en Fabrica CC, en el ordenador del dueño.
+  var p = new URLSearchParams(location.search), caja = document.getElementById("caja");
+  if (p.get("code")) {
+    var cmd = 'python tiktok_api.py codigo "' + p.get("code") + '"';
+    caja.innerHTML = '<h2>Permiso concedido ✅</h2><p>Copia esta orden y pégala en una ventana de cmd abierta en la ' +
+      'carpeta de la fábrica. El código caduca en unos minutos y solo sirve una vez.</p>' +
+      '<div class="codigo" id="cmd"></div><button id="copiar">Copiar</button>';
+    document.getElementById("cmd").textContent = cmd;
+    document.getElementById("copiar").onclick = function () {
+      navigator.clipboard.writeText(cmd).then(function () { document.getElementById("copiar").textContent = "Copiado"; });
+    };
+  } else if (p.get("error")) {
+    caja.innerHTML = "<h2>No se dio el permiso</h2><p></p>";
+    caja.querySelector("p").textContent = "TikTok dice: " + (p.get("error_description") || p.get("error"));
+  }
+</script>
+</body>
+</html>

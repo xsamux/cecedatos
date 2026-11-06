@@ -27,9 +27,14 @@
   var p = new URLSearchParams(location.search), caja = document.getElementById("caja");
   if (p.get("code")) {
     var cmd = 'python tiktok_api.py codigo "' + p.get("code") + '"';
-    caja.innerHTML = '<h2>Permiso concedido ✅</h2><p>Copia esta orden y pégala en una ventana de cmd abierta en la ' +
-      'carpeta de la fábrica. El código caduca en unos minutos y solo sirve una vez.</p>' +
+    var vuelta = "http://localhost:8765/callback?" + new URLSearchParams({code: p.get("code"), state: p.get("state") || ""});
+    caja.innerHTML = '<h2>Permiso concedido ✅</h2>' +
+      '<p><a class="boton" id="volver" style="display:inline-block;background:var(--rojo);color:#fff;padding:12px 22px;' +
+      'border-radius:999px;font-weight:700;text-decoration:none">Volver a Fabrica CC</a></p>' +
+      '<p class="lema" style="font-size:.95rem">Si no tienes el panel abierto, copia esta orden y pégala en una ventana ' +
+      'de cmd abierta en la carpeta de la fábrica. El código caduca en unos minutos y solo sirve una vez.</p>' +
       '<div class="codigo" id="cmd"></div><button id="copiar">Copiar</button>';
+    document.getElementById("volver").href = vuelta;
     document.getElementById("cmd").textContent = cmd;
     document.getElementById("copiar").onclick = function () {
       navigator.clipboard.writeText(cmd).then(function () { document.getElementById("copiar").textContent = "Copiado"; });
